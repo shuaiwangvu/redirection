@@ -1,0 +1,28 @@
+#num_sample 500
+#http -> https:  212
+ -> 42.4 %
+#https -> http:  0
+ -> 0.0 %
+
+# +html:  0
+ -> 0.0 %
+# +json:  19
+ -> 3.8 %
+# +rdf:  0
+ -> 0.0 %
+# +owl:  0
+ -> 0.0 %
+
+#encoding :  27
+ -> 5.4 %
+#missing hash:  4
+ -> 0.8 %
+#namespace (within the same domain):  111
+ -> 22.2 %
+	#DBpedia resource -> page:  53
+	 - 10.6 %
+	#DBpedia page -> resource:  0
+	 - 0.0 %
+#capital:  6
+ -> 1.2 %
+#remaining (TBD) =  127
