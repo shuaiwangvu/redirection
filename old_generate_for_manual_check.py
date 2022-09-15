@@ -1,4 +1,4 @@
-# sample 100 redirect links from ite_uniform_sampling_redirect_edges.nt
+# sample 4000 redirect links from ite_uniform_sampling_redirect_edges.nt
 
 from random import sample
 from rfc3987 import  parse
@@ -7,23 +7,29 @@ import urllib.parse
 
 def get_name (e):
 	name = ''
-	prefix = ''
+	namespace = ''
 	sign = ''
 	if e.rfind('/') == -1 : # the char '/' is not in the iri
 		if e.split('#') != [e]: # but the char '#' is in the iri
 			name = e.split('#')[-1]
-			prefix = '#'.join(e.split('#')[:-1]) + '#'
+			namespace = '#'.join(e.split('#')[:-1]) + '#'
 			sign = '#'
 		else:
 			name = None
 			sign = None
-			prefix =  None
+			namespace =  None
 	else:
 		name = e.split('/')[-1]
-		prefix = '/'.join(e.split('/')[:-1]) + '/'
+		namespace = '/'.join(e.split('/')[:-1]) + '/'
 		sign = '/'
+	# if 'bibsonomy' in e:
+	# 	print ('\nURI = ', e)
+	# 	print ('namespace  = ', namespace)
+	# 	print ('sign  = ', sign)
+	# 	print ('name  = ', name)
+	# 	print ('netloc = ', urllib.parse.urlparse(e).netloc)
 
-	return prefix, sign, name
+	return namespace, sign, name
 
 
 
@@ -46,8 +52,6 @@ print ('There are in total: ',len (pairs), ' entries')
 
 
 
-
-
 # Next we sample 100 pairs from 116031
 num_sample = 4000
 sample100 = sample(list(pairs), num_sample)
@@ -63,6 +67,7 @@ count_html = 0
 count_json = 0
 count_rdf = 0
 count_owl = 0
+count_other_suffix = 0
 count_other = 0
 
 output_file_name = 'sample' + str(num_sample)+'.tsv'
@@ -92,21 +97,25 @@ for (subj, obj) in sample100:
 	elif obj == subj+'.owl': # if they only differ in http https:
 		annotation = '+owl'
 		count_owl += 1
+	elif subj in obj:
+		annotation = 'other_suffix'
+		count_other_suffix += 1
 	else: # if they differ only in encoding
 		variance = set()
 		uq = urllib.parse.unquote(subj)
 		variance.add(uq)
-		prefix, sign, name  = get_name(subj)
+		namespace, sign, name  = get_name(subj)
 		quote_name = urllib.parse.quote(name)
-		new_iri = prefix + quote_name
+		new_iri = namespace + quote_name
 		variance.add(new_iri)
 		if obj in variance:
 			annotation = 'encoding'
 			count_encoding += 1
 		else:
-			s_prefix, s_sign, s_name  = get_name(subj)
-			o_prefix, o_sign, o_name  = get_name(obj)
-			if s_name == o_name and s_prefix != o_prefix and urllib.parse.urlparse(subj).netloc == urllib.parse.urlparse(obj).netloc: # if only different in namespace: updated_namespace
+			s_namespace, s_sign, s_name  = get_name(subj)
+			o_namespace, o_sign, o_name  = get_name(obj)
+			if s_name == o_name and s_namespace != o_namespace : # if only different in namespace: updated_namespace
+				# bebug: remove this condition: and urllib.parse.urlparse(subj).netloc == urllib.parse.urlparse(obj).netloc
 				annotation = 'updated_namespace'
 				count_namespace += 1
 				if ('dbpedia.org/resource' in subj and 'dbpedia.org/page' in obj):
@@ -115,7 +124,7 @@ for (subj, obj) in sample100:
 				elif ('dbpedia.org/page' in subj and 'dbpedia.org/resource' in obj):
 					count_page_resource +=1
 					annotation = 'dbpedia_page_to_resource'
-			elif s_prefix == o_prefix and s_name!= o_name and s_name.lower() == o_name.lower():
+			elif s_namespace == o_namespace and s_name!= o_name and s_name.lower() == o_name.lower():
 				annotation == 'capital'
 				count_capital += 1
 			else:
@@ -124,7 +133,7 @@ for (subj, obj) in sample100:
 				variance.add(uq)
 
 				quote_name = urllib.parse.quote(o_name)
-				new_iri = o_prefix + o_sign+ quote_name
+				new_iri = o_namespace + o_sign+ quote_name
 				variance.add(new_iri)
 
 				if subj in variance and s_name != o_name:
@@ -134,9 +143,9 @@ for (subj, obj) in sample100:
 				elif (subj.split('#')[0] == obj):
 					count_miss_hash += 1
 					annotation = 'miss_hash'
-				else:
-					print ('\nTBD: subj = ', subj)
-					print ('TBD: obj = ', obj)
+				# else:
+				# 	print ('\nTBD: subj = ', subj)
+				# 	print ('TBD: obj = ', obj)
 
 	if annotation == 'other':
 		count_other += 1
@@ -168,6 +177,9 @@ print(" -> %0.1f"% (count_rdf/num_sample*100), '%')
 print ('# +owl: ', count_owl)
 print(" -> %0.1f"% (count_owl/num_sample*100), '%')
 
+print ('other suffix ', count_other_suffix)
+print(" -> %0.1f"% (count_other_suffix/num_sample*100), '%')
+
 
 print ('\n#encoding : ', count_encoding)
 print(" -> %0.1f"% (count_encoding/num_sample*100), '%')
@@ -183,6 +195,12 @@ print("\t - %0.1f"% (count_resource_page/num_sample*100), '%')
 
 print ('\t#DBpedia page -> resource: ', count_page_resource)
 print("\t - %0.1f"% (count_page_resource/num_sample*100), '%')
+
+namespace_except_DBpedia = count_namespace - count_resource_page - count_page_resource
+print ('\t#namespace (except DBPedia): ', namespace_except_DBpedia)
+print("\t-> %0.1f"% (namespace_except_DBpedia/num_sample*100), '%')
+
+print ('---')
 
 print ('#upper or lower case: ', count_capital)
 print(" -> %0.1f"% (count_capital/num_sample*100), '%')
