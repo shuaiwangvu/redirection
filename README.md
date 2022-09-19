@@ -19,7 +19,6 @@ The sampled data files are:
 - sample4000.tsv for the 4,000 sampled edges.
 - sampled_chains_100.tsv 100 sampled chains with greater than 2 hops of redirect.
 
-# All rights reserved.
-# Shuai Wang
-# @ VU Amsterdam
-# shuai.wang@vu.nl
+##### Shuai Wang @ VU Amsterdam
+##### shuai.wang@vu.nl
+#### All rights reserved.
