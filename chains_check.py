@@ -1,3 +1,16 @@
+# This script samples 100 chains and perform some analysis.
+# 1) it performs sampling of chains with greater than 2 hops of redirection.
+# 2) it then studies what these chains of redirection about.
+#  - For those that are redirection within the same domain, it outputs the domain and the corresponding percentage
+#  - For those that are not in the same domain (redirection cross domains), we label them as `multiple'
+# The results are in the column `Comment'
+# The analytical results are in file checking_result_pairs.txt
+# the sampled chains are in file sampled_chains_100.tsv
+
+# All rights reserved.
+# Shuai Wang
+# @ VU Amsterdam 
+
 from random import sample
 from rfc3987 import  parse
 import urllib.parse
@@ -5,11 +18,6 @@ import networkx as nx
 import pandas as pd
 from collections import Counter
 from random import sample
-
-# from urlparse.parse import urlparse
-
-
-
 
 
 redirect_graph = nx.DiGraph()
@@ -168,7 +176,7 @@ else:
 	num_sample = 100
 	samples = sample(redi_paths, num_sample)
 
-	output_file_name = 'chains_' + str(num_sample)+'.tsv'
+	output_file_name = 'sampled_chains_' + str(num_sample)+'.tsv'
 	f = open(output_file_name, "w")
 	f.write('Label' + '\t'+ 'Comment' '\t'+ 'Num_Hops' + '\t'+ 'PATH' +'\n')
 
