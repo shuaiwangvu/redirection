@@ -1,7 +1,7 @@
 # Redirection and Identity
-This repo is for a project that studies the implicit semantics of redirection and how properties of the redirection graphs.
+This repo is for a project that studies the implicit semantics of redirection and properties of the redirection graphs.
 
-The repo consists of the code, the results, and the redirect graphs.
+The repo consists of the code, the results, and the redirect graphs. The paper is under submission and will be added later.
 The identity graphs are online at https://sameas.cc.
 
 We perform 4 samplings. The sampled entities are then examined under the HTTP GET request.
