@@ -19,8 +19,13 @@ The sampled data files are:
 - sample4000.tsv for the 4,000 sampled edges.
 - sampled_chains_100.tsv 100 sampled chains with greater than 2 hops of redirect.
 
-TODO: the Python script for the generation of redirection will be added tomorrow. 
+The scripts about redirection are in the folder /redirect_scripts
 
-##### Shuai Wang @ VU Amsterdam
+The scripts about sampling are in the folder /sampling_scripts
+
+the connected components and the corresponding files are in the folder /connected_components_scripts_and_data
+
+
+##### Shuai Wang & Idries Nasim
 ##### shuai.wang@vu.nl
 #### All rights reserved.
